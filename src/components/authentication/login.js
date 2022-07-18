@@ -29,7 +29,7 @@ var poolData = {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export const SignIn = () => {
     let navigate = useNavigate();
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -73,7 +73,13 @@ export default function SignUp() {
             onSuccess: function (result) {
                 var accessToken = result.getAccessToken().getJwtToken();
                 console.log("access");
-                navigate("/qna");
+                navigate("/qna-authenticate", { state: {
+                    email: email
+                }});
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("email", email);
+                localStorage.setItem("userid-cognito", result.getAccessToken().payload["username"]);
+
             },
             onFailure: function (err) {
                 alert(err.message || JSON.stringify(err));
@@ -81,54 +87,37 @@ export default function SignUp() {
         });
     };
 
-    const registerWithCognito = (event) => {
-        event.preventDefault();
-        var userPool = new CognitoUserPool(poolData);
+    // const registerWithCognito = (event) => {
+    //     event.preventDefault();
+    //     var userPool = new CognitoUserPool(poolData);
 
-        var attributeList = [];
+    //     var attributeList = [];
     
-        var dataEmail = {
-            Name: 'email',
-            Value: email,
-        };
+    //     var dataEmail = {
+    //         Name: 'email',
+    //         Value: email,
+    //     };
     
-        var attributeEmail = new CognitoUserAttribute(dataEmail);
+    //     var attributeEmail = new CognitoUserAttribute(dataEmail);
     
-        attributeList.push(attributeEmail);
+    //     attributeList.push(attributeEmail);
 
-        // navigate("/qna", {
-        //     state: {
-        //         email: email,
-        //         password: password
-        //     }
-        // });
-        userPool.signUp(email, password, attributeList, null, (response) => {
-            console.log("response: ", response);
-            if (!response) {
-                navigate("/qna", {
-                    state: {
-                        email: email,
-                        password: password
-                    }
-                });
-            } else {
-                alert(response);
-            }
-        });
-    }
+    //     userPool.signUp(email, password, attributeList, null, (response) => {
+    //         console.log("response: ", response);
+    //         if (!response) {
+    //             navigate("/qna");
+    //         } else {
+    //             alert(response);
+    //         }
+    //     });
+    // }
 
-    const [firstName, setFirstName] = React.useState('');
-    const [lastName, setLastName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
 
     const handleTextInputChange = (event) => {
         const { name, value } = event.target;
-        if (name === 'firstName') {
-            setFirstName(value);
-        } else if (name === 'lastName') {
-            setLastName(value);
-        } else if (name === 'email') {
+        if (name === 'email') {
             setEmail(value);
         } else if (name === 'password') {
             setPassword(value);
@@ -150,33 +139,10 @@ export default function SignUp() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        Sign in
                     </Typography>
-                    <Box component="form" noValidate onSubmit={registerWithCognito} sx={{ mt: 3 }}>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="firstName"
-                                    required
-                                    fullWidth
-                                    id="firstName"
-                                    label="First Name"
-                                    autoFocus
-                                    onChange= {handleTextInputChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="lastName"
-                                    label="Last Name"
-                                    name="lastName"
-                                    autoComplete="family-name"
-                                    onChange= {handleTextInputChange}
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -207,12 +173,12 @@ export default function SignUp() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Sign In
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/login" variant="body2">
-                                    Already have an account? Sign in
+                                <Link href="/" variant="body2">
+                                    Don't have an account? Sign up
                                 </Link>
                             </Grid>
                         </Grid>
