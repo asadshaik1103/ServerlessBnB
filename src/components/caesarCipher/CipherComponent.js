@@ -6,24 +6,15 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate, useLocation } from "react-router-dom";
 
 import { initializeApp } from 'firebase/app';
 import { doc, collection, addDoc, getFirestore, getDoc, query, where, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
 
+import { useNavigate, useLocation } from 'react-router-dom';
 const theme = createTheme();
 
-export const QnA = () => {
-
+export const CipherComponent = () => {
     let navigate = useNavigate();
-    // let params = useParams();
-
-    const { state } = useLocation();
-
-    const [question1, SetQuestion1] = React.useState("In what city were you born?")
-    const [question2, SetQuestion2] = React.useState("What was your favorite food as a child?")
-    const [answer1, SetAnswer1] = React.useState("")
-    const [answer2, SetAnswer2] = React.useState("")
 
     const firebaseConfig = {
         apiKey: "AIzaSyAH-rkE1X016FVI3mMHS84CBpJx438sWjA",
@@ -33,24 +24,22 @@ export const QnA = () => {
         messagingSenderId: "118152119095",
         appId: "1:118152119095:web:2db390886f389c897550b2",
         measurementId: "G-QW28YJ4KBG"
-      };
+    };
 
     const [db, setDb] = React.useState(null);
+
+    const { state } = useLocation();
 
     React.useEffect(() => {
         const app = initializeApp(firebaseConfig);
         let db = getFirestore(app);
         setDb(db);
+        setChallengeText(generateRandomString(6)); // <-- will generate a random string of length 5
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-
-        console.log({
-            answer1: answer1,
-            answer2: answer2,
-        });
 
         storeData(db);
     };
@@ -60,40 +49,52 @@ export const QnA = () => {
             const userInfo = {
                 email: state.email,
                 password: state.password,
-                answerFirst: answer1,
-                answerSecond: answer2
+                answerFirst: state.answerFirst,
+                answerSecond: state.answerSecond,
+                cipherShiftKey: cipherShiftKey
             }
             const docRef = doc(firestoreDB, 'user_data', "registration_data");
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const snapshotData = docSnap.data();
-                if (snapshotData[userInfo.email]) {
-                    alert('email already exists');
-                } else {
+                // if (snapshotData[userInfo.email]) {
+                //     alert('email already exists');
+                // } else {
                     await setDoc(docRef, { [userInfo.email]: { ...userInfo } }, { merge: true });
-                    navigate('/cipher', { state: {
-                        email: userInfo.email,
-                        password: userInfo.password,
-                        answerFirst: userInfo.answerFirst,
-                        answerSecond: userInfo.answerSecond
-                    } });
-                }
+                    // navigate to login page
+                    navigate('/login');
+                // }
             } else {
                 const newDocRef = await setDoc(doc(firestoreDB, "user_data", "registration_data"), {
                     [userInfo.email]: { ...userInfo }
                 });
-                navigate('/cipher', { state: {
-                    email: userInfo.email,
-                    password: userInfo.password,
-                    answerFirst: userInfo.answerFirst,
-                    answerSecond: userInfo.answerSecond
-                } });
             }
         } catch (error) {
             console.log(error);
         }
     }
 
+    const [challengeText, setChallengeText] = React.useState("ABCD");
+    const [cipherShiftKey, setCipherShiftKey] = React.useState("");
+
+    const generateRandomString = (length) => {
+        let result = "", seeds
+    
+        for(let i = 0; i < length - 1; i++){
+            seeds = [
+                Math.floor(Math.random() * 25) + 65,
+                Math.floor(Math.random() * 25) + 97
+            ]
+            result += String.fromCharCode(seeds[Math.floor(Math.random() * 2)])
+        }
+    
+        return result
+    }
+
+
+    React.useEffect(() => {
+        console.log("cipherShiftKey: ", cipherShiftKey);
+    }, [cipherShiftKey]);
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -107,50 +108,19 @@ export const QnA = () => {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Provide answers to below security questions
+                        Provide cipher answer for the challenge text: {challengeText}
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <div style={{
-                            width: '100%',
-                            height: '50px',
-                            display: 'flex',
-                            flexFlow: 'column',
-                            justifyContent: 'end'
-
-                        }}>
-                            <Typography variant="subtitle2" gutterBottom component="div">{question1}</Typography>
-                        </div>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="answer1"
-                            label="Answer"
-                            name="answer1"
+                            id="cipherShiftKey"
+                            label="Cipher Shift Key"
+                            name="cipherShiftKey"
                             autoFocus
-                            value={answer1}
-                            onChange={(event) => { SetAnswer1(event.target.value) }}
-                        />
-                        <div style={{
-                            width: '100%',
-                            height: '50px',
-                            display: 'flex',
-                            flexFlow: 'column',
-                            justifyContent: 'end'
-
-                        }}>
-                            <Typography variant="subtitle2" gutterBottom component="div">{question2}</Typography>
-                        </div>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="answer2"
-                            label="Answer"
-                            name="answer2"
-                            autoFocus
-                            value={answer2}
-                            onChange={(event) => { SetAnswer2(event.target.value) }}
+                            value={cipherShiftKey}
+                            onChange={(event) => { setCipherShiftKey(event.target.value) }}
                         />
                         <Button
                             type="submit"
@@ -158,7 +128,7 @@ export const QnA = () => {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Save
+                            Save Cipher
                         </Button>
                     </Box>
                 </Box>
