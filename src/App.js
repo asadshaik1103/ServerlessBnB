@@ -9,6 +9,7 @@ import { CipherComponentAuthentication } from './components/authentication/caesa
 import Home from './components/Home';
 import { Feedback } from './components/Feedback/feedback';
 import { Analysis } from './components/analysis/analysis';
+import { BookTour } from './components/TourManager/bookTour';
 
 // import ReactDOM from "react-dom/client";
 import {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/cipher-authenticate" element={<CipherComponentAuthentication />} />
         <Route path='/feedback' element={<Feedback />} />
         <Route path='/analysis' element={<Analysis />} />
+        <Route path='/booktour' element ={<BookTour/>} />
       </Routes>
     </BrowserRouter>
   );
