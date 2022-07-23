@@ -17,7 +17,7 @@ def lambda_handler(event, context):
     print(text)
     text = json.loads(text)
     print(type(text))
-    listscore = text["predictions"]
+    listscore = text["predictions"][0]["scores"]
     for l in listscore:
         print(l)
     maxitem = listscore.index(max(listscore))
