@@ -58,7 +58,8 @@ export const BookTour = () => {
                 // console.log(JSON.parse(response))
                 try{
                     var pass = storeData(response)
-                    
+                    var respforviz = axios.post("https://us-central1-atomic-life-356321.cloudfunctions.net/callinglambda", {data: response})
+                    console.log(respforviz)
                 } catch(e) {
                     console.log(e)
                 }
