@@ -1,3 +1,7 @@
+ /**
+ * @author Vibhor Bhatnagar <vibhor.bhatnagar@dal.ca>
+ */
+ 
  const { PubSub, v1 } = require('@google-cloud/pubsub');
  const project_id = "serverless-project-356217";
  const subscriberClient = new v1.SubscriberClient({
@@ -49,4 +53,6 @@
     });
    }
  };
+
+ //Code Reference: https://cloud.google.com/pubsub/docs/create-subscription
  
