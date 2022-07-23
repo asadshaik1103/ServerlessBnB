@@ -21,7 +21,7 @@ export const BookTour = () => {
     const theme = createTheme();
     const [body, setBody] = React.useState("")
     var response = ''
-    var bookingResponse = ''
+    const [bookingResponse, setBookingResponse] = React.useState('');
     var data1 = ''
     const firebaseConfig = {
         apiKey: "AIzaSyAYaTiesliO6_Re4ODBvfK2vDAMylAZ-T0",
@@ -35,10 +35,13 @@ export const BookTour = () => {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app)
     const ref = collection(db, "tourPass")
+    const userId = localStorage.getItem('userid-cognito')
+    
     const handleSubmit = e => {
         e.preventDefault();
-        data1 = ''
-        data1 = '{"user": "xyz", "preference_type": ' + tourType + ', "budget": ' + parseInt(budget) + ', "number_of_people": ' + headCount + ', "date": "' + date + '"}';
+        // bookingResponse = " tour booked"
+        // setBookingResponse(' test 1');
+        data1 = '{"user": "' + userId + '", "preference_type": ' + tourType + ', "budget": ' + parseInt(budget) + ', "number_of_people": ' + headCount + ', "date": "' + date + '"}';
         setBody(JSON.parse(data1))
         console.log(body)
         axios({
@@ -48,13 +51,14 @@ export const BookTour = () => {
         })
             .then(res => {
                 response = res.data
-                bookingResponse = { response } + " tour booked"
+                setBookingResponse(response.tour + " tour booked")
                 setTourType('')
                 setHeadCount('')
                 setDate('')
                 // console.log(JSON.parse(response))
                 try{
                     var pass = storeData(response)
+                    
                 } catch(e) {
                     console.log(e)
                 }
@@ -63,6 +67,8 @@ export const BookTour = () => {
                 console.log("Tour booked successfully")
             })
             .catch(err => {
+                
+                setBookingResponse("Error in booking")
                 console.error("error booking the tour")
             });
     };
@@ -171,9 +177,9 @@ export const BookTour = () => {
 
                         }}>
                         </div>
-                        {/* <Typography component="h1" variant="h5"  style={{fontSize: 12}}>
-                    {bookingResponse}
-                </Typography> */}
+                        <Typography component="h1" variant="h5"  style={{fontSize: 12}}>
+                            {bookingResponse}
+                        </Typography>
                         <Button
                             type="submit"
                             fullWidth
@@ -186,5 +192,6 @@ export const BookTour = () => {
                 </Box>
             </Container>
         </ThemeProvider>
+        
     );
 }
