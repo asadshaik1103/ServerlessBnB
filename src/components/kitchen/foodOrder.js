@@ -1,5 +1,3 @@
-import {initializeApp} from 'firebase/app';
-import {collection, getFirestore, setDoc, doc} from "firebase/firestore";
 import {ThemeProvider} from "@mui/styles";
 import {createTheme} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,105 +5,122 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import {MenuItem, Select} from "@mui/material";
+import {MenuItem, Select, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {v4} from "uuid";
 import axios from "axios";
+import Home from '../Home';
+import {useNavigate} from 'react-router';
+
 
 export const OrderFood = () => {
     const theme = createTheme();
     const [foodItem, setFoodItem] = React.useState("")
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBCFJTln4yuszDHpnv1tTiCDHHzIDgQaZM",
-        authDomain: "csci5410-project-356905.firebaseapp.com",
-        projectId: "csci5410-project-356905",
-        storageBucket: "csci5410-project-356905.appspot.com",
-        messagingSenderId: "410169754914",
-        appId: "1:410169754914:web:07056faf289d88f410517b",
-        measurementId: "G-9FBGVZCY9E"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app)
+    const [quantity, setQuantity] = React.useState("")
+    let [orderId, setOrderId] = React.useState("")
+    const emailId = "xyz@gmail.com"
+    let navigate = useNavigate();
 
     const handleSubmit = e => {
         e.preventDefault();
-        // storeData(db);
+        orderId = v4()
+        localStorage.setItem("orderid", orderId)
         axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/foodOrder', {
-            "order_id": "123",
-            "customer_id": "xyx@gmail.com"
+            "order_id": orderId,
+            "customer_id": emailId,
+            "food_item": foodItem,
+            "food_quantity": quantity
         }).then(res => {
-            console.log(res);
-            if (res && res.data && res.data.valid) {
-                alert("Successfully validated");
+            if (res.status === 200 && res.data['message'] === "Order updated in database successfully") {
+                alert("Order placed successfully with Order Id: " + orderId)
+                navigate('/orderid')
             } else {
-                alert("Invalid code");
+                alert("Something went wrong, please try again!")
+                window.location.reload();
             }
 
         }).catch(err => {
             alert(err);
         });
     }
-    return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline/>
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Typography component="h1" variant="h5">
-                        Order Food
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                        <div style={{
-                            width: '100px',
-                            height: '80px',
-                            display: 'flex',
-                            flexFlow: 'column',
-                            justifyContent: 'end'
+        const menu = localStorage.getItem("menu")
+        const oe = JSON.parse(menu)
+            const arr = [];
+            Object.keys(oe).forEach(function(key) {
+              arr.push(oe[key]);
+            });
 
-                        }}>
-                            <Typography variant="subtitle2" gutterBottom component="div"/>
-                        </div>
-                        <lable>Select Food Item</lable>
-                        <Select
-                            margin="dense"
-                            required
-                            fullWidth
-                            id="scoreId"
-                            label={foodItem}
-                            name="Score"
-                            autoFocus
-                            value={foodItem}
-                            onChange={(event) => {
-                                setFoodItem(event.target.value)
-                            }}
-                        >
-                            <MenuItem value="CROISSANT">CROISSANT</MenuItem>
-                            <MenuItem value="PAIN AU CHOCOLAT">PAIN AU CHOCOLAT</MenuItem>
-                            <MenuItem value="SOUR CREAM COFFEE CAKE">SOUR CREAM COFFEE CAKE</MenuItem>
-                            <MenuItem value="HOUSE BRIOCHE FRENCH TOAST">HOUSE BRIOCHE FRENCH TOAST</MenuItem>
-                            <MenuItem value="BREAKFAST BUTTY SANDWICH">BREAKFAST BUTTY SANDWICH</MenuItem>
-                            <MenuItem value="BLUEBERRY PANCAKES">BLUEBERRY PANCAKES</MenuItem>
-                            <MenuItem value="VEGAN CHIA PUDDING CUP">VEGAN CHIA PUDDING CUP</MenuItem>
-                            <MenuItem value="GREEN JUICE">GREEN JUICE</MenuItem>
-                        </Select>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{mt: 3, mb: 2}}
-                        >
-                            Place Order
-                        </Button>
+        return (
+            <ThemeProvider theme={theme}>
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline/>
+                    <Home/>
+                    <Box
+                        sx={{
+                            marginTop: 10,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography component="h1" variant="h5">
+                            Order Food
+                        </Typography>
+                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                            <div style={{
+                                width: '100px',
+                                height: '80px',
+                                display: 'flex',
+                                flexFlow: 'column',
+                                justifyContent: 'end'
+
+                            }}>
+                                <Typography variant="subtitle2" gutterBottom component="div"/>
+                            </div>
+                            <lable>Select Food Item</lable>
+                            <Select
+                                margin="dense"
+                                required
+                                fullWidth
+                                id="foodItem"
+                                label={foodItem}
+                                name="foodItem"
+                                autoFocus
+                                value={foodItem}
+                                onChange={(event) => {
+                                    setFoodItem(event.target.value)
+                                }}
+                            >
+                                {arr.map((type) => {
+                                    return (<MenuItem value={type.food_item}>{type.food_item}</MenuItem>)
+                                })}
+
+                            </Select>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="quantity"
+                                label="Enter Quantity"
+                                name="quantity"
+                                autoFocus
+                                value={quantity}
+                                onChange={(event) => {
+                                    setQuantity(event.target.value)
+                                }}
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{mt: 3, mb: 2}}
+                            >
+                                Place Order
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-            </Container>
-        </ThemeProvider>
-    );
+                </Container>
+            </ThemeProvider>
+        )
+
 }
