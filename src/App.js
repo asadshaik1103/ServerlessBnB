@@ -10,6 +10,7 @@ import {Feedback} from './components/Feedback/feedback';
 import {Analysis} from './components/analysis/analysis';
 import {BookTour} from './components/TourManager/bookTour';
 import {OrderFood} from './components/kitchen/foodOrder';
+import {ConfirmOrder} from './components/kitchen/confirmOrder';
 import {BrowserRouter, Route, Routes,} from "react-router-dom";
 import axios from "axios";
 import OrderOutput from './components/kitchen/orderOutput'
@@ -42,6 +43,7 @@ function App() {
           <Route path='/booktour' element={<BookTour/>}/>
           <Route path='/foodorder' element={<OrderFood/>}/>
             <Route path='/orderid' element={<OrderOutput/>}/>
+            <Route path='/confirmorder' element={<ConfirmOrder/>}/>
 
         </Routes>
       </BrowserRouter>
