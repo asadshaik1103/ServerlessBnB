@@ -101,7 +101,7 @@ export const BookTour = () => {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Tour Recomendation {userId}
+                        Tour Recomendation
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <div style={{
