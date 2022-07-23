@@ -21,19 +21,24 @@ function Home() {
     let navigate = useNavigate();
 
     const handleClick = (text) => {
-        if (text == 'Book Room') {
+        if (text === 'Book Room') {
             navigate('/home');
         }
-        if (text == 'Order Food') {
+        if (text === 'Order Food') {
             navigate('/foodorder');
         }
-        if (text == 'Book Tour') {
+        if (text === 'Book Tour') {
             navigate('/booktour');
         }
-        if (text == 'View Invoice') {
+        if (text === 'View Invoice') {
             navigate('/invoice');
         }
     };
+    const clickLogout = () =>  {
+           localStorage.clear()
+             navigate('/');
+    }
+
 
     return (<Box sx={{display: 'flex'}}>
             <CssBaseline/>
@@ -60,7 +65,7 @@ function Home() {
                                 <NotificationsIcon/>
                             </Badge>
                         </IconButton>
-                        <Button variant="contained">Logout</Button>
+                        <Button onClick={clickLogout} variant="contained">Logout</Button>
                     </Box>
                 </Toolbar>
             </AppBar>
