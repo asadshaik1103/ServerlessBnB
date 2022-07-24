@@ -16,6 +16,8 @@ import axios from "axios";
 import OrderOutput from './components/kitchen/orderOutput'
 import UserLogs from './components/userLogs/userLogs';
 import Visualisation from './components/visualisation/visualisation';
+import { Rooms } from './components/rooms/rooms';
+import React from 'react';
 
 function App() {
   axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/fetchFoodMenu', { "Content-Type": "application/json" }).then(res => {
@@ -29,15 +31,20 @@ function App() {
   }).catch(err => {
     alert(err);
   });
+
+  const [cognitoUser, setCognitoUser] = React.useState(null);
+  const logout = () => {
+    cognitoUser.signOut();
+  }
   return (
     // <SignUp />
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home logout={logout} />} />
         <Route path="/" element={<SignUp />} />
         <Route path="/qna" element={<QnA />} />
         <Route path="/cipher" element={<CipherComponent />} />
-        <Route path="/login" element={<SignIn />} />
+        <Route path="/login" element={<SignIn setCognitoUser={setCognitoUser} />} />
         <Route path="/qna-authenticate" element={<QnAAuthentication />} />
         <Route path="/cipher-authenticate" element={<CipherComponentAuthentication />} />
         <Route path='/feedback' element={<Feedback />} />
@@ -48,6 +55,7 @@ function App() {
         <Route path='/confirmorder' element={<ConfirmOrder />} />
         <Route path='/admin' element={<UserLogs />} />
         <Route path='/visualisation' element={<Visualisation />} />
+        <Route path='/rooms' element={<Rooms />} />
 
       </Routes>
     </BrowserRouter>
