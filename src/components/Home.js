@@ -16,6 +16,8 @@ import ListItemText from '@mui/material/ListItemText';
 import {useNavigate} from 'react-router';
 import { OrderFood } from '../components/kitchen/foodOrder';
 import { BookTour } from '../components/TourManager/bookTour'
+import { Feedback } from '../components/Feedback/feedback';
+import { Analysis } from '../components/analysis/analysis';
 const drawerWidth = 250;
 
 function Home() {
@@ -30,20 +32,22 @@ function Home() {
         //     return;
         // }
         if (text === 'Book Room') {
-            // navigate('/home');
-            // set path for book rooms component
             setPath('Book Room');
         }
         if (text === 'Order Food') {
-            // navigate('/foodorder');
             setPath('Order Food');
         }
         if (text === 'Book Tour') {
             setPath('Book Tour');
         }
         if (text === 'View Invoice') {
-            // navigate('/invoice');
             setPath('View Invoice');
+        }
+        if (text === 'Feedback') {
+            setPath('Feedback');
+        }
+        if (text === 'Analysis') {
+            setPath('Analysis');
         }
     };
 
@@ -97,7 +101,7 @@ function Home() {
                 <Toolbar/>
                 <Box sx={{overflow: 'auto'}}>
                     <List>
-                        {["Book Room", "Order Food", "Book Tour", "View Invoice"].map((text) => {
+                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis"].map((text) => {
                             return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
                                     <ListItemButton onClick={(event) => handleClick(text, event)}>
                                         <ListItemText primary={text}/>
@@ -113,8 +117,10 @@ function Home() {
             >
                 <Toolbar />
                 {path === 'Book Tour' && <BookTour />}
-                {path === 'Book Room' && <OrderFood />}
+                {/* {path === 'Book Room' && <BookRoom />} */}
                 {path === 'Order Food' && <OrderFood />}
+                {path === 'Feedback' && <Feedback />}
+                {path === 'Analysis' && <Analysis />}
             </Box>
         </Box>);
 }
