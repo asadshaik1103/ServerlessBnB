@@ -30,7 +30,6 @@ export const CipherComponentAuthentication = () => {
     const [db, setDb] = React.useState(null);
 
     const { state } = useLocation();
-    const navigate = useNavigate();
 
     const [challengeText, setChallengeText] = React.useState("ABCD");
     const [cipherAnswer, setCipherAnswer] = React.useState("");

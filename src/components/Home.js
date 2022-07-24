@@ -18,6 +18,7 @@ import { OrderFood } from '../components/kitchen/foodOrder';
 import { BookTour } from '../components/TourManager/bookTour'
 import { Feedback } from '../components/Feedback/feedback';
 import { Analysis } from '../components/analysis/analysis';
+import { Rooms } from './rooms/rooms';
 const drawerWidth = 250;
 
 function Home({ logout }) {
@@ -119,7 +120,7 @@ function Home({ logout }) {
             >
                 <Toolbar />
                 {path === 'Book Tour' && <BookTour />}
-                {/* {path === 'Book Room' && <BookRoom />} */}
+                {path === 'Book Room' && <Rooms />}
                 {path === 'Order Food' && <OrderFood />}
                 {path === 'Feedback' && <Feedback />}
                 {path === 'Analysis' && <Analysis />}
