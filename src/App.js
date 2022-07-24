@@ -11,6 +11,7 @@ import { Analysis } from './components/analysis/analysis';
 import { BookTour } from './components/TourManager/bookTour';
 import { OrderFood } from './components/kitchen/foodOrder';
 import { ConfirmOrder } from './components/kitchen/confirmOrder';
+import Lexbot  from './components/lexbot/Lexbot';
 import { BrowserRouter, Route, Routes, } from "react-router-dom";
 import axios from "axios";
 import OrderOutput from './components/kitchen/orderOutput'
@@ -48,6 +49,7 @@ function App() {
         <Route path='/confirmorder' element={<ConfirmOrder />} />
         <Route path='/admin' element={<UserLogs />} />
         <Route path='/visualisation' element={<Visualisation />} />
+        <Route path='/lexbot' element={<Lexbot />} />
 
       </Routes>
     </BrowserRouter>
