@@ -1,5 +1,3 @@
-import {ThemeProvider} from "@mui/styles";
-import {createTheme} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
 import Container from "@mui/material/Container";
@@ -10,7 +8,6 @@ import axios from "axios";
 import {useNavigate} from 'react-router';
 
 export const ConfirmOrder = () => {
-    const theme = createTheme();
     const emailId = localStorage.getItem("email")
     let navigate = useNavigate();
 
@@ -51,7 +48,7 @@ export const ConfirmOrder = () => {
     }
 
     return (
-            <ThemeProvider theme={theme}>
+
                 <Container component="main" maxWidth="xs">
                     <CssBaseline/>
                     <Home/>
@@ -88,6 +85,6 @@ export const ConfirmOrder = () => {
                         </div>
                     </Box>
                 </Container>
-            </ThemeProvider>
+
     )
 }

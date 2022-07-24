@@ -14,6 +14,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import {useNavigate} from 'react-router';
+import axios from "axios";
 
 const drawerWidth = 250;
 
@@ -25,73 +26,84 @@ function Home() {
             navigate('/home');
         }
         if (text === 'Order Food') {
+            axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/fetchFoodMenu', {"Content-Type": "application/json"}).then(res => {
+        if (res.data) {
+            localStorage.setItem("menu", JSON.stringify(res.data))
+
+        } else {
+            alert("Unable to fetch food menu.");
+        }
+
+    }).catch(err => {
+        alert(err);
+    });
             navigate('/foodorder');
         }
         if (text === 'Book Tour') {
             navigate('/booktour');
         }
         if (text === 'View Invoice') {
-            navigate('/invoice');
+            navigate('/orderInvoice');
         }
     };
-    const clickLogout = () =>  {
-           localStorage.clear()
-             navigate('/');
+    const clickLogout = () => {
+        localStorage.clear()
+        navigate('/');
     }
 
 
     return (<Box sx={{display: 'flex'}}>
-            <CssBaseline/>
-            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+        <CssBaseline/>
+        <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
 
-                <Toolbar>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="div"
-                        sx={{display: {xs: 'none', sm: 'block'}, marginLeft: '600px'}}
+            <Toolbar>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    sx={{display: {xs: 'none', sm: 'block'}, marginLeft: '600px'}}
+                >
+                    Serverless B&B
+                </Typography>
+
+                <Box sx={{flexGrow: 1}}/>
+                <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+
+                    <IconButton
+                        size="large"
+                        color="inherit"
                     >
-                        Serverless B&B
-                    </Typography>
-
-                    <Box sx={{flexGrow: 1}}/>
-                    <Box sx={{display: {xs: 'none', md: 'flex'}}}>
-
-                        <IconButton
-                            size="large"
-                            color="inherit"
-                        >
-                            <Badge color="error">
-                                <NotificationsIcon/>
-                            </Badge>
-                        </IconButton>
-                        <Button onClick={clickLogout} variant="contained">Logout</Button>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: {width: drawerWidth, boxSizing: 'border-box'},
-
-                }}
-            >
-                <Toolbar/>
-                <Box sx={{overflow: 'auto'}}>
-                    <List>
-                        {["Book Room", "Order Food", "Book Tour", "View Invoice"].map((text) => {
-                            return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
-                                    <ListItemButton onClick={() => handleClick(text)}>
-                                        <ListItemText primary={text}/>
-                                    </ListItemButton>
-                                </ListItem>);
-                        })}
-                    </List>
+                        <Badge color="error">
+                            <NotificationsIcon/>
+                        </Badge>
+                    </IconButton>
+                    <Button onClick={clickLogout} variant="contained">Logout</Button>
                 </Box>
-            </Drawer>
-        </Box>);
+            </Toolbar>
+        </AppBar>
+        <Drawer
+            variant="permanent"
+            sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                [`& .MuiDrawer-paper`]: {width: drawerWidth, boxSizing: 'border-box'},
+
+            }}
+        >
+            <Toolbar/>
+            <Box sx={{overflow: 'auto'}}>
+                <List>
+                    {["Book Room", "Order Food", "Book Tour", "View Invoice"].map((text) => {
+                        return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
+                            <ListItemButton onClick={() => handleClick(text)}>
+                                <ListItemText primary={text}/>
+                            </ListItemButton>
+                        </ListItem>);
+                    })}
+                </List>
+            </Box>
+        </Drawer>
+    </Box>);
 }
 
 export default Home;

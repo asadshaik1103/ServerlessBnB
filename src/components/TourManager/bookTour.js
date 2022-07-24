@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Select, MenuItem, TextField } from '@mui/material';
 import { initializeApp } from 'firebase/app';
 import { doc, collection, addDoc, getFirestore, getDoc, query, where, getDocs, updateDoc, setDoc, } from 'firebase/firestore';
@@ -18,7 +17,6 @@ export const BookTour = () => {
     const [budget, setBudget] = React.useState("")
     const [date, setDate] = React.useState("")
 
-    const theme = createTheme();
     const [body, setBody] = React.useState("")
     var response = ''
     const [bookingResponse, setBookingResponse] = React.useState('');
@@ -90,7 +88,7 @@ export const BookTour = () => {
 
 
     return (
-        <ThemeProvider theme={theme}>
+
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -192,7 +190,7 @@ export const BookTour = () => {
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+
         
     );
 }
