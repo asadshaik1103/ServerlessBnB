@@ -29,7 +29,7 @@ var poolData = {
 
 const theme = createTheme();
 
-export const SignIn = () => {
+export const SignIn = ({ setCognitoUser }) => {
     let navigate = useNavigate();
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -79,7 +79,7 @@ export const SignIn = () => {
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("email", email);
                 localStorage.setItem("userid-cognito", result.getAccessToken().payload["username"]);
-
+                setCognitoUser(cognitoUser);
             },
             onFailure: function (err) {
                 alert(err.message || JSON.stringify(err));

@@ -15,6 +15,8 @@ import axios from "axios";
 const theme = createTheme();
 
 export const CipherComponentAuthentication = () => {
+    let navigate = useNavigate();
+
     const firebaseConfig = {
         apiKey: "AIzaSyAH-rkE1X016FVI3mMHS84CBpJx438sWjA",
         authDomain: "serverless-bnb-6c350.firebaseapp.com",

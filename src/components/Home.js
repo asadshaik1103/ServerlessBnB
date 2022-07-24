@@ -20,7 +20,7 @@ import { Feedback } from '../components/Feedback/feedback';
 import { Analysis } from '../components/analysis/analysis';
 const drawerWidth = 250;
 
-function Home() {
+function Home({ logout }) {
     let navigate = useNavigate();
     const [path, setPath] = React.useState('book_rooms');
 
@@ -54,9 +54,11 @@ function Home() {
     React.useEffect(() => {
         console.log("path: ", path);
     }, [path]);
+
     const clickLogout = () =>  {
            localStorage.clear()
              navigate('/');
+             logout();
     }
 
 
@@ -85,7 +87,7 @@ function Home() {
                                 <NotificationsIcon/>
                             </Badge>
                         </IconButton>
-                        <Button variant="contained">Logout</Button>
+                        <Button onClick={clickLogout} variant="contained">Logout</Button>
                     </Box>
                 </Toolbar>
             </AppBar>
