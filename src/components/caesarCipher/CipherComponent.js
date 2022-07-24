@@ -95,6 +95,10 @@ export const CipherComponent = () => {
     React.useEffect(() => {
         console.log("cipherShiftKey: ", cipherShiftKey);
     }, [cipherShiftKey]);
+
+    const disableSaveCipherKey = () => {
+        return Number(cipherShiftKey) < 1 || Number(cipherShiftKey) > 25;
+    }
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -108,7 +112,7 @@ export const CipherComponent = () => {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Provide cipher answer for the challenge text: {challengeText}
+                        Provide cipher shift key number between 1 and 25
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -126,6 +130,7 @@ export const CipherComponent = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
+                            disabled={disableSaveCipherKey()}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Save Cipher
