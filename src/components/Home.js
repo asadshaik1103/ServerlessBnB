@@ -6,20 +6,22 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {Button} from '@mui/material';
+import { Button } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import {useNavigate} from 'react-router';
+import { useNavigate } from 'react-router';
 import { OrderFood } from '../components/kitchen/foodOrder';
 import { BookTour } from '../components/TourManager/bookTour'
 import { Feedback } from '../components/Feedback/feedback';
+import OrderInvoice from '../components/kitchen/orderInvoice';
 import { Analysis } from '../components/analysis/analysis';
 import { Rooms } from './rooms/rooms';
 import Visualisation from '../components/visualisation/visualisation';
+import axios from "axios";
 
 const drawerWidth = 250;
 
@@ -39,6 +41,18 @@ function Home({ logout }) {
         }
         if (text === 'Order Food') {
             setPath('Order Food');
+            axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/fetchFoodMenu', { "Content-Type": "application/json" }).then(res => {
+                if (res.data) {
+                    localStorage.setItem("menu", JSON.stringify(res.data))
+
+                } else {
+                    alert("Unable to fetch food menu.");
+                }
+
+            }).catch(err => {
+                alert(err);
+            });
+
         }
         if (text === 'Book Tour') {
             setPath('Book Tour');
@@ -48,6 +62,9 @@ function Home({ logout }) {
         }
         if (text === 'Feedback') {
             setPath('Feedback');
+        }
+        if (text === 'OrderInvoice') {
+            setPath('OrderInvoice');
         }
         if (text === 'Analysis') {
             setPath('Analysis');
@@ -61,29 +78,29 @@ function Home({ logout }) {
         console.log("path: ", path);
     }, [path]);
 
-    const clickLogout = () =>  {
-           localStorage.clear()
-             navigate('/');
-             logout();
+    const clickLogout = () => {
+        localStorage.clear()
+        navigate('/');
+        logout();
     }
 
 
-    return (<Box sx={{display: 'flex'}}>
-            <CssBaseline/>
-            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+    return (<Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
 
-                <Toolbar>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="div"
-                        sx={{display: {xs: 'none', sm: 'block'}, marginLeft: '600px'}}
-                    >
-                        Serverless B&B
-                    </Typography>
+            <Toolbar>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: '600px' }}
+                >
+                    Serverless B&B
+                </Typography>
 
-                    <Box sx={{flexGrow: 1}}/>
-                    <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
                         <IconButton
                             size="large"
@@ -94,9 +111,9 @@ function Home({ logout }) {
                             </Badge>
                         </IconButton>
                         <Button onClick={clickLogout} variant="contained">Logout</Button>
-                    </Box>
-                </Toolbar>
-            </AppBar>
+                    </Box >
+                </Toolbar >
+            </AppBar >
             <Drawer
                 variant="permanent"
                 sx={{
@@ -128,10 +145,11 @@ function Home({ logout }) {
                 {path === 'Book Room' && <Rooms />}
                 {path === 'Order Food' && <OrderFood />}
                 {path === 'Feedback' && <Feedback />}
+                {path === 'View Invoice' && <OrderInvoice />}
                 {path === 'Analysis' && <Analysis />}
                 {path === 'Visualisation' && <Visualisation />}
             </Box>
-        </Box>);
+        </Box >);
 }
 
 export default Home;
