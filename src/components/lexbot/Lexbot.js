@@ -1,5 +1,7 @@
 import { Amplify, Interactions } from 'aws-amplify';
 import { AmplifyChatbot } from '@aws-amplify/ui-react/legacy';
+import { Button } from '@mui/material';
+import {useNavigate} from 'react-router';
 
 
 Amplify.configure({
@@ -20,12 +22,16 @@ Amplify.configure({
 });
 
 function Lexbot() {
+  let navigate = useNavigate();
   return (
+    <>
     <AmplifyChatbot
     botName="BandBapplication"
     botTitle="BandBapplication"
     welcomeMessage="Hello, how can I help you?"
   />
+  <Button onClick={() => { navigate('/home'); }}>Go back</Button>
+    </>
     
   );
 }

@@ -198,8 +198,7 @@ switch (intentName) {
               }
             break;
         case "Navigation":
-            try{
-               // response.dialogAction.fulfillmentState = "Fulfilled";
+ 
                if(message.includes("tour"))
                {
                 elicitresponse.dialogAction.intentName = "Navigation";
@@ -258,11 +257,25 @@ switch (intentName) {
                    closresponse.dialogAction.message.content = "Your package is booked for " + res.data.tour + " for " + res.data.number_of_people + " people for date " + res.data.date + ".Cost of the tour will be " + res.data.cost + "$.Hope you ennjoy your tour."
                     return closresponse;
                }
-            }
-            catch{
-                
-            }
             break;
+        case "Guesthotel":
+                   if(message.includes("available"))
+                   {
+                       let availablerooms = "";
+                       for(let i=0;i<rooms.length;i++)
+                        {
+                           if(rooms[i].available == true)
+                           {
+                              console.log("entered for");
+                             availablerooms = availablerooms + rooms[i].room_number +", ";
+                           }
+                        }
+                        let length = availablerooms.length;
+                        let finalrooms = availablerooms.substring(1,length);
+                        closresponse.dialogAction.message.content = "Following rooms are available for booking: " + finalrooms + " .Please login to book rooms";
+                        return closresponse;
+                   }
+                  break;
         case "Exceptional":
              try{
                  //console.log("entered");
@@ -285,66 +298,3 @@ switch (intentName) {
 exports.handler = async (event) => {
     return dispatcher(event);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -175,10 +175,15 @@ export const SignIn = ({ setCognitoUser }) => {
                         >
                             Sign In
                         </Button>
-                        <Grid container justifyContent="flex-end">
+                        <Grid container justifyContent="space-around">
                             <Grid item>
                                 <Link href="/" variant="body2">
                                     Don't have an account? Sign up
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link href="/Lexbot" variant="body2">
+                                    Login as a Guest user
                                 </Link>
                             </Grid>
                         </Grid>

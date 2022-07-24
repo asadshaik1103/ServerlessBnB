@@ -22,6 +22,7 @@ import { Analysis } from '../components/analysis/analysis';
 import { Rooms } from './rooms/rooms';
 import Visualisation from '../components/visualisation/visualisation';
 import axios from "axios";
+import Lexbot  from '../components/lexbot/Lexbot';
 
 const drawerWidth = 250;
 
@@ -71,6 +72,10 @@ function Home({ logout }) {
         }
         if (text === 'Visualisation') {
             setPath('Visualisation');
+        }
+        if (text === 'Chat') {
+            // setPath('lexbot');
+            navigate('/Lexbot')
         }
     };
 
@@ -126,7 +131,7 @@ function Home({ logout }) {
                 <Toolbar/>
                 <Box sx={{overflow: 'auto'}}>
                     <List>
-                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis", "Visualisation"].map((text) => {
+                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis", "Visualisation", "Chat"].map((text) => {
                             return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
                                     <ListItemButton onClick={(event) => handleClick(text, event)}>
                                         <ListItemText primary={text}/>
@@ -148,6 +153,7 @@ function Home({ logout }) {
                 {path === 'View Invoice' && <OrderInvoice />}
                 {path === 'Analysis' && <Analysis />}
                 {path === 'Visualisation' && <Visualisation />}
+                {/* {path === 'lexbot' && <Lexbot />} */}
             </Box>
         </Box >);
 }
