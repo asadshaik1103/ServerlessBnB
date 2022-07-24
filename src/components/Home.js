@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router';
 
 const drawerWidth = 250;
 
-function Home() {
+function Home({ logout }) {
     let navigate = useNavigate();
 
     const handleClick = (text) => {
@@ -40,6 +40,7 @@ function Home() {
     const clickLogout = () => {
         localStorage.clear()
         navigate('/');
+        logout();
     }
 
 

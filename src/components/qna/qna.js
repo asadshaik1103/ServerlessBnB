@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { initializeApp } from 'firebase/app';
 import { doc, collection, addDoc, getFirestore, getDoc, query, where, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
+import axios from "axios";
 
 const theme = createTheme();
 
@@ -20,8 +21,8 @@ export const QnA = () => {
 
     const { state } = useLocation();
 
-    const [question1, SetQuestion1] = React.useState("In what city were you born?")
-    const [question2, SetQuestion2] = React.useState("What was your favorite food as a child?")
+    const [question1, SetQuestion1] = React.useState("")
+    const [question2, SetQuestion2] = React.useState("")
     const [answer1, SetAnswer1] = React.useState("")
     const [answer2, SetAnswer2] = React.useState("")
 
@@ -37,10 +38,19 @@ export const QnA = () => {
 
     const [db, setDb] = React.useState(null);
 
+    const getQuestions = () => {
+        axios.get("https://us-central1-serverless-bnb-6c350.cloudfunctions.net/getQuestions").then((res) => {
+            console.log("res: ", res);
+            SetQuestion1(res.data.questions.questionFirst);
+            SetQuestion2(res.data.questions.questionSecond);
+        });
+    }
+
     React.useEffect(() => {
         const app = initializeApp(firebaseConfig);
         let db = getFirestore(app);
         setDb(db);
+        getQuestions();
     }, []);
 
     const handleSubmit = (event) => {
