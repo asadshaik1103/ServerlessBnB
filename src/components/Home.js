@@ -14,26 +14,47 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import {useNavigate} from 'react-router';
-
+import { OrderFood } from '../components/kitchen/foodOrder';
+import { BookTour } from '../components/TourManager/bookTour'
 const drawerWidth = 250;
 
 function Home() {
     let navigate = useNavigate();
+    const [path, setPath] = React.useState('book_rooms');
 
-    const handleClick = (text) => {
-        if (text == 'Book Room') {
-            navigate('/home');
+    const handleClick = (text, event) => {
+        if (event) {
+            event.preventDefault();
         }
-        if (text == 'Order Food') {
-            navigate('/foodorder');
+        // if (text === path) {
+        //     return;
+        // }
+        if (text === 'Book Room') {
+            // navigate('/home');
+            // set path for book rooms component
+            setPath('Book Room');
         }
-        if (text == 'Book Tour') {
-            navigate('/booktour');
+        if (text === 'Order Food') {
+            // navigate('/foodorder');
+            setPath('Order Food');
         }
-        if (text == 'View Invoice') {
-            navigate('/invoice');
+        if (text === 'Book Tour') {
+            setPath('Book Tour');
+        }
+        if (text === 'View Invoice') {
+            // navigate('/invoice');
+            setPath('View Invoice');
         }
     };
+
+    React.useEffect(() => {
+        console.log("path: ", path);
+    }, [path]);
+    const clickLogout = () =>  {
+           localStorage.clear()
+             navigate('/');
+    }
+
 
     return (<Box sx={{display: 'flex'}}>
             <CssBaseline/>
@@ -78,7 +99,7 @@ function Home() {
                     <List>
                         {["Book Room", "Order Food", "Book Tour", "View Invoice"].map((text) => {
                             return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
-                                    <ListItemButton onClick={() => handleClick(text)}>
+                                    <ListItemButton onClick={(event) => handleClick(text, event)}>
                                         <ListItemText primary={text}/>
                                     </ListItemButton>
                                 </ListItem>);
@@ -86,6 +107,15 @@ function Home() {
                     </List>
                 </Box>
             </Drawer>
+            <Box
+                component="main"
+                sx={{flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Toolbar />
+                {path === 'Book Tour' && <BookTour />}
+                {path === 'Book Room' && <OrderFood />}
+                {path === 'Order Food' && <OrderFood />}
+            </Box>
         </Box>);
 }
 

@@ -28,6 +28,7 @@ export const CipherComponentAuthentication = () => {
     const [db, setDb] = React.useState(null);
 
     const { state } = useLocation();
+    const navigate = useNavigate();
 
     const [challengeText, setChallengeText] = React.useState("ABCD");
     const [cipherAnswer, setCipherAnswer] = React.useState("");
@@ -66,6 +67,7 @@ export const CipherComponentAuthentication = () => {
             console.log(res);
             if (res && res.data && res.data.valid) {
                 alert("Successfully validated");
+                navigate("/home");
             } else {
                 alert("Invalid code");
             }

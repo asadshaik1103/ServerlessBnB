@@ -54,7 +54,7 @@ export const OrderFood = () => {
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline/>
-                    <Home/>
+                    {/* <Home/> */}
                     <Box
                         sx={{
                             marginTop: 10,
