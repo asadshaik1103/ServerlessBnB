@@ -19,6 +19,8 @@ import { BookTour } from '../components/TourManager/bookTour'
 import { Feedback } from '../components/Feedback/feedback';
 import { Analysis } from '../components/analysis/analysis';
 import { Rooms } from './rooms/rooms';
+import Visualisation from '../components/visualisation/visualisation';
+
 const drawerWidth = 250;
 
 function Home({ logout }) {
@@ -49,6 +51,9 @@ function Home({ logout }) {
         }
         if (text === 'Analysis') {
             setPath('Analysis');
+        }
+        if (text === 'Visualisation') {
+            setPath('Visualisation');
         }
     };
 
@@ -104,7 +109,7 @@ function Home({ logout }) {
                 <Toolbar/>
                 <Box sx={{overflow: 'auto'}}>
                     <List>
-                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis"].map((text) => {
+                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis", "Visualisation"].map((text) => {
                             return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
                                     <ListItemButton onClick={(event) => handleClick(text, event)}>
                                         <ListItemText primary={text}/>
@@ -124,6 +129,7 @@ function Home({ logout }) {
                 {path === 'Order Food' && <OrderFood />}
                 {path === 'Feedback' && <Feedback />}
                 {path === 'Analysis' && <Analysis />}
+                {path === 'Visualisation' && <Visualisation />}
             </Box>
         </Box>);
 }
