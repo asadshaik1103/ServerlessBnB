@@ -18,30 +18,16 @@ export const OrderFood = () => {
     const [foodItem, setFoodItem] = React.useState("")
     const [quantity, setQuantity] = React.useState("")
     let [orderId, setOrderId] = React.useState("")
-    const emailId = "xyz@gmail.com"
+    const emailId = localStorage.getItem("email")
     let navigate = useNavigate();
 
     const handleSubmit = e => {
         e.preventDefault();
         orderId = v4()
         localStorage.setItem("orderid", orderId)
-        axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/foodOrder', {
-            "order_id": orderId,
-            "customer_id": emailId,
-            "food_item": foodItem,
-            "food_quantity": quantity
-        }).then(res => {
-            if (res.status === 200 && res.data['message'] === "Order updated in database successfully") {
-                alert("Order placed successfully with Order Id: " + orderId)
-                navigate('/orderid')
-            } else {
-                alert("Something went wrong, please try again!")
-                window.location.reload();
-            }
-
-        }).catch(err => {
-            alert(err);
-        });
+        localStorage.setItem("fooditem", foodItem)
+        localStorage.setItem("quantity", quantity)
+        navigate('/confirmorder')
     }
         const menu = localStorage.getItem("menu")
         const oe = JSON.parse(menu)
