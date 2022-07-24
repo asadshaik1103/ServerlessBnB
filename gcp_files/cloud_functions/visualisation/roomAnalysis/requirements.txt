@@ -1,0 +1,6 @@
+# Function dependencies, for example:
+# package>=version
+flask
+pandas
+google-cloud-storage
+flask-cors
