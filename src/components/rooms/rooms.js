@@ -10,8 +10,11 @@ import Typography from '@mui/material/Typography';
 import { initializeApp } from 'firebase/app';
 import { doc, collection, addDoc, getFirestore, getDoc, query, where, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
 import axios from 'axios';
+import {useNavigate} from 'react-router';
 
 export const Rooms = () => {
+    let navigate = useNavigate();
+
     const firebaseConfig = {
         apiKey: "AIzaSyAH-rkE1X016FVI3mMHS84CBpJx438sWjA",
         authDomain: "serverless-bnb-6c350.firebaseapp.com",
@@ -62,7 +65,9 @@ export const Rooms = () => {
             }
         }).then((resfromAcknowledgement) => {
             console.log("resfromAcknowledgement: ", resfromAcknowledgement);
-            alert(resfromAcknowledgement)
+            alert("You're room has been booked");
+            localStorage.setItem("room_book_no", room.room_number);
+            navigate('/home');
         }).catch(err => {
             alert(err);
         });
@@ -106,6 +111,9 @@ export const Rooms = () => {
 
 const RoomCard = ({room, bookRoom}) => {
 
+    const isRoomBooked = (room) => {
+        return room && (!room.available || localStorage.getItem("room_book_no") === room.room_number);
+    }
     
 
     return (
@@ -125,7 +133,7 @@ const RoomCard = ({room, bookRoom}) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button disabled={room && !room.available}
+                <Button disabled={isRoomBooked(room)}
                     size="small"
                     onClick={(e) => {bookRoom(room)}}>Book Room</Button>
             </CardActions>
