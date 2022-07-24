@@ -6,96 +6,126 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Button } from '@mui/material';
+import {Button} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { useNavigate } from 'react-router';
-
+import {useNavigate} from 'react-router';
+import { OrderFood } from '../components/kitchen/foodOrder';
+import { BookTour } from '../components/TourManager/bookTour'
+import { Feedback } from '../components/Feedback/feedback';
+import { Analysis } from '../components/analysis/analysis';
+import { Rooms } from './rooms/rooms';
 const drawerWidth = 250;
 
 function Home({ logout }) {
     let navigate = useNavigate();
+    const [path, setPath] = React.useState('book_rooms');
 
-    const handleClick = (text) => {
+    const handleClick = (text, event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        // if (text === path) {
+        //     return;
+        // }
         if (text === 'Book Room') {
-            navigate('/home');
+            setPath('Book Room');
         }
         if (text === 'Order Food') {
-            navigate('/foodorder');
+            setPath('Order Food');
         }
         if (text === 'Book Tour') {
-            navigate('/booktour');
+            setPath('Book Tour');
         }
         if (text === 'View Invoice') {
-            navigate('/invoice');
+            setPath('View Invoice');
         }
-        if (text === "Customer's Choice") {
-            navigate('/visualisation');
+        if (text === 'Feedback') {
+            setPath('Feedback');
+        }
+        if (text === 'Analysis') {
+            setPath('Analysis');
         }
     };
-    const clickLogout = () => {
-        localStorage.clear()
-        navigate('/');
-        logout();
+
+    React.useEffect(() => {
+        console.log("path: ", path);
+    }, [path]);
+
+    const clickLogout = () =>  {
+           localStorage.clear()
+             navigate('/');
+             logout();
     }
 
 
-    return (<Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    return (<Box sx={{display: 'flex'}}>
+            <CssBaseline/>
+            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
 
-            <Toolbar>
-                <Typography
-                    variant="h5"
-                    noWrap
-                    component="div"
-                    sx={{ display: { xs: 'none', sm: 'block' }, marginLeft: '600px' }}
-                >
-                    Serverless B&B
-                </Typography>
-
-                <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
-                    <IconButton
-                        size="large"
-                        color="inherit"
+                <Toolbar>
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="div"
+                        sx={{display: {xs: 'none', sm: 'block'}, marginLeft: '600px'}}
                     >
-                        <Badge color="error">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
-                    <Button onClick={clickLogout} variant="contained">Logout</Button>
-                </Box>
-            </Toolbar>
-        </AppBar>
-        <Drawer
-            variant="permanent"
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                        Serverless B&B
+                    </Typography>
 
-            }}
-        >
-            <Toolbar />
-            <Box sx={{ overflow: 'auto' }}>
-                <List>
-                    {["Book Room", "Order Food", "Book Tour", "View Invoice", "Customer's Choice"].map((text) => {
-                        return (<ListItem key={text} disablePadding sx={{ marginLeft: '10px' }}>
-                            <ListItemButton onClick={() => handleClick(text)}>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>);
-                    })}
-                </List>
+                    <Box sx={{flexGrow: 1}}/>
+                    <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+
+                        <IconButton
+                            size="large"
+                            color="inherit"
+                        >
+                            <Badge color="error">
+                                <NotificationsIcon/>
+                            </Badge>
+                        </IconButton>
+                        <Button onClick={clickLogout} variant="contained">Logout</Button>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                variant="permanent"
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: {width: drawerWidth, boxSizing: 'border-box'},
+
+                }}
+            >
+                <Toolbar/>
+                <Box sx={{overflow: 'auto'}}>
+                    <List>
+                        {["Book Room", "Order Food", "Book Tour", "View Invoice", "Feedback", "Analysis"].map((text) => {
+                            return (<ListItem key={text} disablePadding sx={{marginLeft: '10px'}}>
+                                    <ListItemButton onClick={(event) => handleClick(text, event)}>
+                                        <ListItemText primary={text}/>
+                                    </ListItemButton>
+                                </ListItem>);
+                        })}
+                    </List>
+                </Box>
+            </Drawer>
+            <Box
+                component="main"
+                sx={{flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+            >
+                <Toolbar />
+                {path === 'Book Tour' && <BookTour />}
+                {path === 'Book Room' && <Rooms />}
+                {path === 'Order Food' && <OrderFood />}
+                {path === 'Feedback' && <Feedback />}
+                {path === 'Analysis' && <Analysis />}
             </Box>
-        </Drawer>
-    </Box>);
+        </Box>);
 }
 
 export default Home;
