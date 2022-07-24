@@ -21,17 +21,6 @@ import { Rooms } from './components/rooms/rooms';
 import React from 'react';
 
 function App() {
-  axios.post('https://us-central1-csci5410-project-356905.cloudfunctions.net/fetchFoodMenu', { "Content-Type": "application/json" }).then(res => {
-    if (res.data) {
-      localStorage.setItem("menu", JSON.stringify(res.data))
-
-    } else {
-      alert("Unable to fetch food menu.");
-    }
-
-  }).catch(err => {
-    alert(err);
-  });
 
   const [cognitoUser, setCognitoUser] = React.useState(null);
   const logout = () => {
