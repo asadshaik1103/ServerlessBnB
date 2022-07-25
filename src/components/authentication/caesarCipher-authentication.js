@@ -14,17 +14,8 @@ import axios from "axios";
 
 const theme = createTheme();
 
-export const QnA = () => {
-
+export const CipherComponentAuthentication = () => {
     let navigate = useNavigate();
-    // let params = useParams();
-
-    const { state } = useLocation();
-
-    const [question1, SetQuestion1] = React.useState("")
-    const [question2, SetQuestion2] = React.useState("")
-    const [answer1, SetAnswer1] = React.useState("")
-    const [answer2, SetAnswer2] = React.useState("")
 
     const firebaseConfig = {
         apiKey: "AIzaSyAH-rkE1X016FVI3mMHS84CBpJx438sWjA",
@@ -34,35 +25,57 @@ export const QnA = () => {
         messagingSenderId: "118152119095",
         appId: "1:118152119095:web:2db390886f389c897550b2",
         measurementId: "G-QW28YJ4KBG"
-      };
+    };
 
     const [db, setDb] = React.useState(null);
 
-    const getQuestions = () => {
-        axios.get("https://us-central1-serverless-bnb-6c350.cloudfunctions.net/getQuestions").then((res) => {
-            console.log("res: ", res);
-            SetQuestion1(res.data.questions.questionFirst);
-            SetQuestion2(res.data.questions.questionSecond);
-        });
+    const { state } = useLocation();
+
+    const [challengeText, setChallengeText] = React.useState("ABCD");
+    const [cipherAnswer, setCipherAnswer] = React.useState("");
+
+    const generateRandomString = (length) => {
+        let result = "", seeds
+    
+        for(let i = 0; i < length - 1; i++){
+            seeds = [
+                Math.floor(Math.random() * 25) + 65,
+                Math.floor(Math.random() * 25) + 97
+            ]
+            result += String.fromCharCode(seeds[Math.floor(Math.random() * 2)])
+        }
+    
+        return result
     }
 
     React.useEffect(() => {
         const app = initializeApp(firebaseConfig);
         let db = getFirestore(app);
         setDb(db);
-        getQuestions();
+        setChallengeText(generateRandomString(6)); // <-- will generate a random string of length 5
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        console.log({
-            answer1: answer1,
-            answer2: answer2,
+        // storeData(db);
+        axios.post("https://us-central1-serverless-bnb-6c350.cloudfunctions.net/validateCipherCode", {
+            "challengeText": challengeText,
+            "cipherAnswer": cipherAnswer,
+            "email": state.email,
+        }).then(res => {
+            console.log(res);
+            if (res && res.data && res.data.valid) {
+                alert("Successfully validated");
+                navigate("/home");
+            } else {
+                alert("Invalid code");
+            }
+            // storeData(db);
+        }).catch(err => {
+            alert(err);
         });
-
-        storeData(db);
     };
 
     const storeData = async (firestoreDB) => {
@@ -70,8 +83,9 @@ export const QnA = () => {
             const userInfo = {
                 email: state.email,
                 password: state.password,
-                answerFirst: answer1,
-                answerSecond: answer2
+                answerFirst: state.answerFirst,
+                answerSecond: state.answerSecond,
+                cipherAnswer: cipherAnswer
             }
             const docRef = doc(firestoreDB, 'user_data', "registration_data");
             const docSnap = await getDoc(docRef);
@@ -81,29 +95,20 @@ export const QnA = () => {
                     alert('email already exists');
                 } else {
                     await setDoc(docRef, { [userInfo.email]: { ...userInfo } }, { merge: true });
-                    navigate('/cipher', { state: {
-                        email: userInfo.email,
-                        password: userInfo.password,
-                        answerFirst: userInfo.answerFirst,
-                        answerSecond: userInfo.answerSecond
-                    } });
                 }
             } else {
                 const newDocRef = await setDoc(doc(firestoreDB, "user_data", "registration_data"), {
                     [userInfo.email]: { ...userInfo }
                 });
-                navigate('/cipher', { state: {
-                    email: userInfo.email,
-                    password: userInfo.password,
-                    answerFirst: userInfo.answerFirst,
-                    answerSecond: userInfo.answerSecond
-                } });
             }
         } catch (error) {
             console.log(error);
         }
     }
 
+    React.useEffect(() => {
+        console.log("cipherAnswer: ", cipherAnswer);
+    }, [cipherAnswer]);
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -117,50 +122,19 @@ export const QnA = () => {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Provide answers to below security questions
+                        Provide cipher answer for the challenge text: {challengeText}
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <div style={{
-                            width: '100%',
-                            height: '50px',
-                            display: 'flex',
-                            flexFlow: 'column',
-                            justifyContent: 'end'
-
-                        }}>
-                            <Typography variant="subtitle2" gutterBottom component="div">{question1}</Typography>
-                        </div>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="answer1"
-                            label="Answer"
-                            name="answer1"
+                            id="cipherAnswer"
+                            label="Cipher Answer"
+                            name="cipherAnswer"
                             autoFocus
-                            value={answer1}
-                            onChange={(event) => { SetAnswer1(event.target.value) }}
-                        />
-                        <div style={{
-                            width: '100%',
-                            height: '50px',
-                            display: 'flex',
-                            flexFlow: 'column',
-                            justifyContent: 'end'
-
-                        }}>
-                            <Typography variant="subtitle2" gutterBottom component="div">{question2}</Typography>
-                        </div>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="answer2"
-                            label="Answer"
-                            name="answer2"
-                            autoFocus
-                            value={answer2}
-                            onChange={(event) => { SetAnswer2(event.target.value) }}
+                            value={cipherAnswer}
+                            onChange={(event) => { setCipherAnswer(event.target.value) }}
                         />
                         <Button
                             type="submit"
@@ -168,7 +142,7 @@ export const QnA = () => {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Save
+                            Validate Cipher
                         </Button>
                     </Box>
                 </Box>

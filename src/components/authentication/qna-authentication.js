@@ -10,11 +10,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { initializeApp } from 'firebase/app';
 import { doc, collection, addDoc, getFirestore, getDoc, query, where, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
+
 import axios from "axios";
 
 const theme = createTheme();
 
-export const QnA = () => {
+export const QnAAuthentication = () => {
 
     let navigate = useNavigate();
     // let params = useParams();
@@ -51,6 +52,7 @@ export const QnA = () => {
         let db = getFirestore(app);
         setDb(db);
         getQuestions();
+
     }, []);
 
     const handleSubmit = (event) => {
@@ -62,7 +64,27 @@ export const QnA = () => {
             answer2: answer2,
         });
 
-        storeData(db);
+        axios.post("https://us-central1-serverless-bnb-6c350.cloudfunctions.net/validateQnA", {
+            "answerFirst": answer1,
+            "answerSecond": answer2,
+            "email": state.email
+        }).then(res => {
+            console.log(res);
+
+            if (res && res.data && res.data.valid) {
+                navigate('/cipher-authenticate', { state: {
+                    email: state.email,
+                    password: state.password,
+                    answerFirst: answer1,
+                    answerSecond: answer2
+                } });
+            } else {
+                alert('Invalid details provided');
+            }
+            
+        }).catch(err => {
+            alert(err);
+        });
     };
 
     const storeData = async (firestoreDB) => {
@@ -72,7 +94,7 @@ export const QnA = () => {
                 password: state.password,
                 answerFirst: answer1,
                 answerSecond: answer2
-            }
+            };
             const docRef = doc(firestoreDB, 'user_data', "registration_data");
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
@@ -126,7 +148,6 @@ export const QnA = () => {
                             display: 'flex',
                             flexFlow: 'column',
                             justifyContent: 'end'
-
                         }}>
                             <Typography variant="subtitle2" gutterBottom component="div">{question1}</Typography>
                         </div>
@@ -168,7 +189,7 @@ export const QnA = () => {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Save
+                            Validate
                         </Button>
                     </Box>
                 </Box>
