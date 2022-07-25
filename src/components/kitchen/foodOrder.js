@@ -40,7 +40,7 @@ export const OrderFood = () => {
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
-                <Home/>
+                {/* <Home/> */}
                 <Box
                     sx={{
                         marginTop: 10,
